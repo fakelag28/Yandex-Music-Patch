@@ -1,5 +1,5 @@
 {
-  "name": "yandexmusicpatcher-2",
+  "name": "yandexmusicpatch",
   "module": "index.ts",
   "type": "module",
   "private": true,

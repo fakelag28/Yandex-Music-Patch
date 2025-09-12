@@ -2,7 +2,7 @@ import { getTrackMeta, getProgress, isPlaying } from "~/mod/features/utils/playe
 import posthog from "posthog-js";
 
 let isRpcEnabled = true;
-let showModButton = true;
+let showModButton = false;
 
 // Функция для получения состояния плеера из окна приложения. Её вызывает main процесс - src\mod\main.js
 window.__getPlayerState = () => {
