@@ -1,6 +1,6 @@
 import posthog from "posthog-js";
 
-let exeptionsCaptureEnabled = true;
+let exeptionsCaptureEnabled = false;
 
 function updateExeptionsCaptureEnabled() {
   if (exeptionsCaptureEnabled) posthog.opt_in_capturing();

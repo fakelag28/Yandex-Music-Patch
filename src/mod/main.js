@@ -49,6 +49,8 @@ if (!fs.existsSync(settingsFilePath)) {
   }
 }
 
+
+
 // window API - запрос настроек пользователя
 electron.ipcMain.handle("yandexMusicMod.getStorageValue", (_ev, key) => {
   const settings = fs.readFileSync(settingsFilePath, "utf8") || "{}";
@@ -64,7 +66,12 @@ electron.ipcMain.on("yandexMusicMod.setStorageValue", (_ev, key, value) => {
 
   electron.BrowserWindow.getAllWindows().forEach((window) =>
     window.webContents.send("yandexMusicMod.storageValueUpdated", key, value),
+    
   );
+  if (key === "fullscreen/toggle" && process.platform === "win32") {
+    const win = electron.BrowserWindow.getFocusedWindow() || electron.BrowserWindow.getAllWindows();
+    if (win) win.setFullScreen(!win.isFullScreen());
+  }
 });
 
 // window API - выбор папки для загрузки треков
@@ -276,3 +283,27 @@ async function decryptYandexAudio(encryptedData, secretKey) {
 
 // Discord RPC (из-за того, что main.js не бандлится а просто добавляется в оригинальный index.js, все импорты приходится делать вручную. Строчка ниже просто заменится на содержимое файла src\mod\features\utils\discordRPC.js)
 mod_require("discordRPC");
+
+electron.app.whenReady().then(() => {
+  if (process.platform === "win32") {
+    electron.globalShortcut.register("F11", () => {
+      const win = electron.BrowserWindow.getFocusedWindow() || electron.BrowserWindow.getAllWindows();
+      if (win) win.setFullScreen(!win.isFullScreen());
+    });
+  }
+
+  electron.app.on("browser-window-created", (_e, win) => {
+    if (process.platform !== "win32") return;
+    win.webContents.on("before-input-event", (event, input) => {
+      if (input.type === "keyDown" && input.key === "F11") {
+        event.preventDefault();
+        win.setFullScreen(!win.isFullScreen());
+      }
+    });
+  });
+});
+
+electron.app.on("will-quit", () => {
+  electron.globalShortcut.unregister("F11");
+  electron.globalShortcut.unregisterAll();
+});

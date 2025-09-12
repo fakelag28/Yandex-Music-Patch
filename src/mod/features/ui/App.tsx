@@ -20,15 +20,18 @@ import { AutoLiker } from "@ui/components/auto-liker";
 
 import { Button } from "./components/ui/button";
 
-import logo from "@ui/assets/logo.png?inline";
-import discordBg from "@ui/assets/discord-bg.png?inline";
-
 import { FaDiscord, FaGithub } from "react-icons/fa";
 import { RxUpdate } from "react-icons/rx";
 
+declare global {
+  interface Window {
+    yandexMusicMod: {
+      setStorageValue: (key: string, value: any) => void | Promise<void>;
+    };
+  }
+}
+
 const IS_DEV = false;
-const DISCORD_INVITE_URL = "https://discord.gg/4nK7nk2sY8";
-const GITHUB_REPO_URL = "https://github.com/Stephanzion/YandexMusicBetaMod/";
 
 export default function App() {
   const [mountNode, setMountNode] = useState<HTMLDivElement | null>(null);
@@ -106,13 +109,10 @@ export default function App() {
 
   const sheetTrigger = (
     <SheetTrigger className="flex w-full items-center justify-center gap-2.5 rounded-full border-2 border-[var(--ym-outline-color-primary-disabled)] p-[5px] text-[var(--ym-controls-color-primary-text-enabled_variant)] transition-colors duration-100 ease-in-out hover:bg-[var(--ym-surface-color-primary-enabled-list)] px-6">
-      <div
-        className="h-[25px] w-[25px] bg-contain bg-no-repeat"
-        style={{
-          backgroundImage: `url(${logo})`,
-        }}
-      ></div>
-      <span className="trigger-text hidden lg:inline">Меню мода</span>
+      <span className="flex h-[25px] w-[25px] items-center justify-center text-lg font-semibold lg:hidden">
+        P
+      </span>
+      <span className="hidden lg:inline">Patch</span>
     </SheetTrigger>
   );
 
@@ -132,68 +132,13 @@ export default function App() {
 
           <div className="bg-secondary/20 m-3 mb-0 flex justify-between rounded-md border px-4 py-2 shadow-sm">
             <div className="flex items-center gap-2">
-              <div
-                className="h-6 w-6 bg-contain bg-no-repeat"
-                style={{
-                  backgroundImage: `url(${logo})`,
-                }}
-              />
-              <span className="text-foreground text-base font-semibold">Yandex Music Mod</span>
+              <span className="text-foreground text-base font-semibold">Яндекс Музыка Patch</span>
               <span className="text-muted-foreground text-sm font-semibold">v{import.meta.env.VITE_MOD_VERSION}</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Tooltip>
-                <TooltipTrigger>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => window.open(DISCORD_INVITE_URL, "_blank", "noreferrer")}
-                  >
-                    <FaDiscord className="text-blue-500 h-[1.3rem]! w-[1.3rem]!" fill="currentColor" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>Discord сервер</p>
-                </TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => window.open(GITHUB_REPO_URL, "_blank", "noreferrer")}
-                  >
-                    <FaGithub className="text-foreground h-[1.3rem]! w-[1.3rem]!" fill="currentColor" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>Исходный код на Github</p>
-                </TooltipContent>
-              </Tooltip>
             </div>
           </div>
 
           <ScrollArea className="flex h-full flex-col gap-4 overflow-hidden overflow-x-auto overflow-y-auto rounded-md">
             {devtoolsEnabled && <IPChecker />}
-
-            {appMetaQuery.isSuccess &&
-              appMetaQuery.data &&
-              appMetaQuery.data.modStable !== import.meta.env.VITE_MOD_VERSION && (
-                <div
-                  className="m-4 py-4 px-5 flex flex-row justify-center items-center gap-3 bg-secondary border-border rounded-xl hover:scale-105 transition-all cursor-pointer"
-                  onClick={() => window.open(appMetaQuery.data.downloadUrl, "_blank", "noreferrer")}
-                >
-                  <RxUpdate className="text-foreground h-[2.5rem]! w-[2.5rem]!" fill="currentColor" />
-                  <div className="flex flex-col gap-1 justify-center items-start">
-                    <span className="text-foreground text-base font-semibold">
-                      Доступно обновление v{appMetaQuery.data.modStable}
-                    </span>
-                    <span className="text-muted-foreground text-sm">Нажмите, чтобы скачать новую версию мода</span>
-                  </div>
-                </div>
-              )}
 
             <Downloader />
             <DiscordRPC />
@@ -205,22 +150,15 @@ export default function App() {
 
             {devtoolsEnabled && <Playground />}
 
-            <div
-              className="m-4 py-3 flex flex-row justify-center items-center gap-4 border-violet-400 border-1 rounded-xl hover:scale-105 transition-all cursor-pointer opacity-75 dark:opacity-100"
-              style={{ backgroundImage: `url(${discordBg})`, backgroundSize: "cover" }}
-              onClick={() => window.open(DISCORD_INVITE_URL, "_blank", "noreferrer")}
-            >
-              <FaDiscord className="text-white h-[2.5rem]! w-[2.5rem]!" fill="currentColor" />
-              <div className="flex flex-col gap-1 justify-center items-start">
-                <span className="text-white text-lg font-semibold">Yandex Music Mod</span>
-                <span className="text-slate-200 text-sm mt-[-3px]">Присоединяйтесь к нам в Discord</span>
-              </div>
-            </div>
           </ScrollArea>
 
           <div className="m-4 flex flex-row">
-            <Button variant="default" className="flex-1 opacity-0" onClick={() => setIsSheetOpen(false)}>
-              Сохранить
+            <Button
+              variant="outline"
+              className="text-foreground flex-1"
+              onClick={() => window.yandexMusicMod.setStorageValue("fullscreen/toggle", Date.now())}
+            >
+              Полный экран (F11)
             </Button>
             <Button variant="outline" className="text-foreground flex-1" onClick={() => setIsSheetOpen(false)}>
               Назад

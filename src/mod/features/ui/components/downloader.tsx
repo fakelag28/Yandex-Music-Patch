@@ -290,7 +290,7 @@ export function Downloader() {
   }
 
   return (
-    <ExpandableCard title="Скачать треки" opened={true}>
+    <ExpandableCard title="Скачать треки" opened={false}>
       <div className="flex flex-col gap-5 pt-2 px-3">
         <If condition={isDownloading}>
           <div className="flex flex-col gap-3">

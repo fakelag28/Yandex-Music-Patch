@@ -71,27 +71,17 @@ async function updateActivity() {
       largeImageKey: playerStateData.trackMeta.coverUri
         ? `https://${playerStateData.trackMeta.coverUri.replaceAll("%%", "300x300")}`
         : undefined,
-      largeImageKey: playerStateData.trackMeta.coverUri
-        ? `https://${playerStateData.trackMeta.coverUri.replaceAll("%%", "100x100")}`
-        : undefined,
       state: playerStateData.trackMeta.artists.map((a) => a.name).join(", "),
       startTimestamp: startTimestamp,
       endTimestamp: endTimestamp,
       buttons: [
         {
-          label: "🎵 Открыть",
+          label: "Открыть",
           url: `https://music.yandex.ru/track/${playerStateData.trackMeta.id}`,
         },
       ],
       instance: false,
     };
-
-    if (playerState.showModButton) {
-      rpcRequest.buttons.push({
-        label: "💻 Yandex Music Mod",
-        url: `https://github.com/Stephanzion/YandexMusicBetaMod`,
-      });
-    }
 
     client.user.setActivity(rpcRequest);
 

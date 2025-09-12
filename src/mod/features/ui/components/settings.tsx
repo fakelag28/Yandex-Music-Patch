@@ -78,22 +78,8 @@ export function Settings() {
   }
 
   return (
-    <ExpandableCard title="Настройки">
+    <ExpandableCard title="Дополнительно">
       <div className="flex flex-col gap-5 pt-2 px-3">
-        <div className="flex items-center gap-3">
-          <Switch
-            id="settings-exeptions-capture-toggle"
-            checked={exeptionsCaptureEnabled}
-            onCheckedChange={(enabled) => {
-              setExeptionsCaptureEnabled(enabled);
-              window.yandexMusicMod.setStorageValue("settings/exeptionsCaptureEnabled", enabled);
-            }}
-          />
-          <Label htmlFor="settings-exeptions-capture-toggle" className="cursor-pointer">
-            Делиться анонимной статистикой ошибок в приложении
-          </Label>
-        </div>
-
         <div className="flex items-center gap-3">
           <Tooltip>
             <TooltipTrigger className="w-full">
@@ -104,28 +90,6 @@ export function Settings() {
             <TooltipContent side="right">
               <p>Если разработчик попросит вас дать доступ к своему аккаунту, вы можете поделиться этими данными.</p>
               <p>Не передавайте их кому-либо еще.</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Tooltip>
-            <TooltipTrigger className="w-full">
-              <Button
-                onClick={handleUnban}
-                className="w-full"
-                disabled={accountSettingsQuery.isLoading || accountSettingsQuery.data?.adsDisabled === false}
-              >
-                <AiOutlineExperiment
-                  className="text-foreground dark:text-background h-[1rem]! w-[1rem]!"
-                  fill="currentColor"
-                />{" "}
-                Снять бан аккаунта
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right">
-              <p>Эксперементальная функция для снятия бана (бесконечная реклама в рекомендациях и промокод Upgrade)</p>
-              <p>Если и сработает, то не сразу, и нужно прекратить использование сторонних модов</p>
             </TooltipContent>
           </Tooltip>
         </div>
