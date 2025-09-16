@@ -74,6 +74,11 @@ electron.ipcMain.on("yandexMusicMod.setStorageValue", (_ev, key, value) => {
   }
 });
 
+electron.ipcMain.on("yandexMusicMod.restartApp", (_ev) => {
+  electron.app.relaunch();
+  electron.app.exit();
+});
+
 // window API - выбор папки для загрузки треков
 electron.ipcMain.handle("yandexMusicMod.selectDownloadFolder", async (_ev) => {
   const result = await electron.dialog.showOpenDialog({

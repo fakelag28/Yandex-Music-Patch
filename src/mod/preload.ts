@@ -12,4 +12,5 @@ electron_1.contextBridge.exposeInMainWorld("yandexMusicMod", {
   openDownloadDirectory: () => electron_1.ipcRenderer.send("yandexMusicMod.openDownloadDirectory"),
   selectDownloadFolder: () => electron_1.ipcRenderer.invoke("yandexMusicMod.selectDownloadFolder"),
   openFolder: (folderPath: string) => electron_1.ipcRenderer.invoke("yandexMusicMod.openFolder", folderPath),
+  restartApp: () => electron_1.ipcRenderer.send("yandexMusicMod.restartApp"),
 });

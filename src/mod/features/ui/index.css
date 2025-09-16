@@ -128,3 +128,42 @@ aside[class*="Navbar_root_collapsed"] span.trigger-text {
 div[data-test-id="LIKES_HISTORY_COVERS"] {
   display: none;
 }
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+[data-test-id="FULLSCREEN_PLAYER_MODAL"] {
+  transition: all 0.3s ease;
+}
+
+.FullscreenPlayerDesktop_fullscreenButton__custom {
+  margin-right: 8px;
+}
+
+.custom-fullscreen-icon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.FullscreenPlayerDesktop_header__OBhzq {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}

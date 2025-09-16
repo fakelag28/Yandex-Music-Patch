@@ -23,10 +23,16 @@ import { Button } from "./components/ui/button";
 import { FaDiscord, FaGithub } from "react-icons/fa";
 import { RxUpdate } from "react-icons/rx";
 
+import { AnimatedGradient } from "@ui/components/animated-gradient";
+import { FullscreenButton } from "@ui/components/fullscreen-button";
+
 declare global {
   interface Window {
     yandexMusicMod: {
       setStorageValue: (key: string, value: any) => void | Promise<void>;
+      getStorageValue: (key: string) => Promise<any>;
+      onStorageChanged: (callback: (key: string, value: any) => void) => () => void;
+      restartApp: () => void;
     };
   }
 }
@@ -37,6 +43,7 @@ export default function App() {
   const [mountNode, setMountNode] = useState<HTMLDivElement | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(IS_DEV);
   const [devtoolsEnabled, setDevtoolsEnabled] = useState(false);
+  const [gradientEnabled, setGradientEnabled] = useState(false);
 
   const appMetaQuery = useQuery({
     queryKey: ["appMeta"],
@@ -56,11 +63,15 @@ export default function App() {
   useEffect(() => {
     (async () => {
       setDevtoolsEnabled((await window.yandexMusicMod.getStorageValue("devtools/enabled")) || false);
+      setGradientEnabled((await window.yandexMusicMod.getStorageValue("fullscreen/gradientEnabled")) || false);
     })();
 
-    window.yandexMusicMod.onStorageChanged((key: string, value: any) => {
+    const unsubscribe = window.yandexMusicMod.onStorageChanged((key: string, value: any) => {
       if (key.includes("devtools/enabled")) setDevtoolsEnabled(value);
+      if (key === "fullscreen/gradientEnabled") setGradientEnabled(value);
     });
+
+    return unsubscribe;
   }, []);
 
   useEffect(() => {
@@ -135,6 +146,20 @@ export default function App() {
               <span className="text-foreground text-base font-semibold">Яндекс Музыка Patch</span>
               <span className="text-muted-foreground text-sm font-semibold">v{import.meta.env.VITE_MOD_VERSION}</span>
             </div>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => window.open("https://github.com/fakelag28/Yandex-Music-Patch", "_blank", "noreferrer")}
+                >
+                  <FaGithub className="text-foreground h-[1.3rem]! w-[1.3rem]!" fill="currentColor" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>Исходный код на Github</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           <ScrollArea className="flex h-full flex-col gap-4 overflow-hidden overflow-x-auto overflow-y-auto rounded-md">
@@ -144,7 +169,6 @@ export default function App() {
             <DiscordRPC />
             <AutoLiker />
             <AutoBestQuality />
-            <FontChanger />
             <Settings />
             <Devtools />
 
@@ -152,7 +176,7 @@ export default function App() {
 
           </ScrollArea>
 
-          <div className="m-4 flex flex-row">
+          <div className="m-4 flex flex-row gap-2">
             <Button
               variant="outline"
               className="text-foreground flex-1"
@@ -161,13 +185,16 @@ export default function App() {
               Полный экран (F11)
             </Button>
             <Button variant="outline" className="text-foreground flex-1" onClick={() => setIsSheetOpen(false)}>
-              Назад
+              Закрыть
             </Button>
           </div>
 
           <Toaster position="bottom-right" />
         </SheetContent>
       </Sheet>
+
+      <FullscreenButton />
+      <AnimatedGradient enabled={gradientEnabled} />
     </ThemeProvider>
   );
 }
